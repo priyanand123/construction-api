@@ -87,6 +87,8 @@ namespace ConstructionBilling.Infrastructure.Repositories
                 DeliveryManPhoneNo = billing.DeliveryManPhoneNo,
                 CreatedBy = billing.CreatedBy,
                 IsGSTInclude = billing.IsGSTInclude,
+                Buyer = billing.Buyer,
+
 
 
             };
@@ -146,6 +148,8 @@ namespace ConstructionBilling.Infrastructure.Repositories
                 DeliveryManPhoneNo = billing.DeliveryManPhoneNo,
                 ModifiedBy = billing.ModifiedBy,
                 IsGSTInclude= billing.IsGSTInclude,
+                Buyer = billing.Buyer,
+
 
             };
             await Task.Factory.StartNew(() =>
@@ -378,8 +382,8 @@ namespace ConstructionBilling.Infrastructure.Repositories
                     doc.InsertParagraph();
                     Table t = doc.AddTable(items.Count + 1, 4);
                     t.Alignment = Alignment.center;
+                    t.SetWidths(new float[] { 50, 300, 100, 120 });
                     t.Rows[0].Cells[0].Paragraphs.First().Append("S.No").Font(new Xceed.Document.NET.Font("Arial")).FontSize(10);
-                    t.SetWidths(new float[] { 35, 350, 110 });
                     t.Rows[0].Cells[1].Paragraphs.First().Append("Particulars").Font(new Xceed.Document.NET.Font("Arial")).FontSize(10);
 
                     t.Rows[0].Cells[2].Paragraphs.First().Append("Quantity").Font(new Xceed.Document.NET.Font("Arial")).FontSize(10);

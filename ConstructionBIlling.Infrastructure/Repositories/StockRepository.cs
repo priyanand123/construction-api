@@ -29,6 +29,7 @@ namespace ConstructionBilling.Infrastructure.Repositories
         {
             var spName = ConstantSPnames.SP_GETAllSTOCK; // Update the stored procedure name if necessary
             return await Task.Factory.StartNew(() => _db.Connection.Query<Stocks>(spName,
+
                 new { Id = id }, commandType: CommandType.StoredProcedure).ToList());
         }
 

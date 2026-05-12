@@ -20,7 +20,7 @@ namespace ConstructionBilling.Domain.Entities
         /// </summary>
         [JsonPropertyName("consigneeDetails")]
         public string ConsigneeDetails { get; set; } = string.Empty;
-
+       
         /// <summary>
         /// Gets or sets the GST data ID.
         /// </summary>
@@ -134,5 +134,7 @@ namespace ConstructionBilling.Domain.Entities
         /// </summary>
         [JsonPropertyName("modifiedDate")]
         public DateTime? ModifiedDate { get; set; }
+        [JsonPropertyName("buyer")]
+        public string Buyer { get; set; } = string.Empty;
     }
 }

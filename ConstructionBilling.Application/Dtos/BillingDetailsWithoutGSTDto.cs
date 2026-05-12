@@ -19,6 +19,9 @@ namespace ConstructionBilling.Application.Dtos
         /// <summary>
         /// Gets or sets the GSTIN Number.
         /// </summary>
+        [JsonPropertyName("buyer")]
+        public string Buyer { get; set; } = string.Empty;
+
         [JsonPropertyName("companyGstNo")]
         public string companyGstNo { get; set; } = string.Empty;
         /// <summary>

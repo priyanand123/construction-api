@@ -19,11 +19,11 @@ namespace ConstructionBilling.Application.Dtos
             /// </summary>
             [JsonPropertyName("consigneeDetails")]
             public string ConsigneeDetails { get; set; } = string.Empty;
-
-            /// <summary>
-            /// Gets or sets the invoice number.
-            /// </summary>
-            [JsonPropertyName("invoiceNo")]
+          
+        /// <summary>
+        /// Gets or sets the invoice number.
+        /// </summary>
+        [JsonPropertyName("invoiceNo")]
             public string InvoiceNo { get; set; } = string.Empty;
 
             /// <summary>
@@ -277,5 +277,8 @@ namespace ConstructionBilling.Application.Dtos
 
         [JsonPropertyName("isGSTInclude")]
         public int IsGSTInclude { get; set; }
+
+        [JsonPropertyName("buyer")]
+        public string Buyer { get; set; } = string.Empty;
     }
 }

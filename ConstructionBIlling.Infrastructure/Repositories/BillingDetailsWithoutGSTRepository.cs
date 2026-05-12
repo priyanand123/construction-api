@@ -106,6 +106,7 @@ namespace ConstructionBilling.Infrastructure.Repositories
                         t.SetWidths(new float[] { 35, 400, 160, 60, 100, 100, 120 });
                         //{ 35, 300, 120, 130, 120 });
                         t.Rows[k + 1].Cells[1].Paragraphs.First().Append(items[k].DescriptionOfGoods == null ? "" : items[k].DescriptionOfGoods.ToString()).Font(new Xceed.Document.NET.Font("Arial"));
+                        t.Rows[k + 1].Cells[1].Paragraphs.First().Append(items[k].DescriptionOfGoods == null ? "" : items[k].DescriptionOfGoods.ToString()).Font(new Xceed.Document.NET.Font("Arial"));
                         t.Rows[k + 1].Cells[2].Paragraphs.First().Append(items[k].hsnsac == null ? "" : items[k].hsnsac.ToString()).Font(new Xceed.Document.NET.Font("Arial"));
                         t.Rows[k + 1].Cells[3].Paragraphs.First().Append(items[k].Quantity.ToString()).Font(new Xceed.Document.NET.Font("Arial"));
                         t.Rows[k + 1].Cells[4].Paragraphs.First().Append(items[k].Rate.ToString()).Font(new Xceed.Document.NET.Font("Arial"));
