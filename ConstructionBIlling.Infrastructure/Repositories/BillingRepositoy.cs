@@ -382,7 +382,7 @@ namespace ConstructionBilling.Infrastructure.Repositories
                     doc.InsertParagraph();
                     Table t = doc.AddTable(items.Count + 1, 4);
                     t.Alignment = Alignment.center;
-                    t.SetWidths(new float[] { 50, 300, 100, 120 });
+                    t.SetWidths(new float[] { 250f, 300f, 120f, 120f });
                     t.Rows[0].Cells[0].Paragraphs.First().Append("S.No").Font(new Xceed.Document.NET.Font("Arial")).FontSize(10);
                     t.Rows[0].Cells[1].Paragraphs.First().Append("Particulars").Font(new Xceed.Document.NET.Font("Arial")).FontSize(10);
 
@@ -393,6 +393,7 @@ namespace ConstructionBilling.Infrastructure.Repositories
                     {
                         t.Rows[k + 1].Cells[0].Paragraphs.First().Append(items[k].SNo.ToString());
                         t.SetWidths(new float[] { 35, 350,110 });
+
                         //{ 35, 300, 120, 130, 120 });
                         t.Rows[k + 1].Cells[1].Paragraphs.First().Append(items[k].DescriptionOfGoods == null ? "" : items[k].DescriptionOfGoods.ToString()).Font(new Xceed.Document.NET.Font("Arial")).FontSize(10);
                         t.Rows[k + 1].Cells[2].Paragraphs.First().Append(items[k].Quantity.ToString()).Font(new Xceed.Document.NET.Font("Arial")).FontSize(10);
