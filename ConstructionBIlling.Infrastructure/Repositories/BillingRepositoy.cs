@@ -261,8 +261,14 @@ namespace ConstructionBilling.Infrastructure.Repositories
                     //doc.InsertTable(t);
                     doc.ReplaceTextWithObject("<Table>", t);
                 }
+
                 else
                 {
+                    // Skip GoodsInformation because table already added
+                    if (col[i].ToString().Trim() == "GoodsInformation")
+                    {
+                        continue;
+                    }
                     var formatcolumn = "<" + col[i] + ">";
                     doc.ReplaceText(formatcolumn, row[i].ToString());
                 }
@@ -347,90 +353,178 @@ namespace ConstructionBilling.Infrastructure.Repositories
         public string DownloadDeliveryChallen(int id)
         {
             string column = string.Empty;
+
             var spName = ConstantSPnames.SP_GETAllBILLINGDETAIL;
-            string strfilepath = Path.Combine(Directory.GetCurrentDirectory(), "Data", "deliveryChallan.docx");
+
+            string strfilepath = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "Data",
+                "deliveryChallan.docx"
+            );
+
             DataTable ds = new DataTable();
-            // var con = "Data Source=SQL5109.site4now.net;Initial Catalog=db_ab072a_jkbbrickingnew;User Id=db_ab072a_jkbbrickingnew_admin;Password=Lore@123";
 
-            var con = "Data Source=SQL5111.site4now.net;Initial Catalog=db_a85a40_tptserverdb;User Id=db_a85a40_tptserverdb_admin;Password=Lore@123";
+            var con =
+                "Data Source=SQL5111.site4now.net;" +
+                "Initial Catalog=db_a85a40_tptserverdb;" +
+                "User Id=db_a85a40_tptserverdb_admin;" +
+                "Password=Lore@123";
 
-            //  var con = "Data Source=SQL5109.site4now.net;Initial Catalog=db_a85a40_sona;User Id=db_a85a40_sona_admin;Password=Lore@123";
             using (SqlConnection myConnection = new SqlConnection(con))
             {
                 myConnection.Open();
+
                 SqlCommand command = new SqlCommand(spName, myConnection);
-                command.CommandType = CommandType.StoredProcedure; command.Parameters.Add("Id", SqlDbType.Int).Value = id; command.ExecuteNonQuery();
+
+                command.CommandType = CommandType.StoredProcedure;
+
+                command.Parameters.Add("Id", SqlDbType.Int).Value = id;
+
+                command.ExecuteNonQuery();
+
                 using (var da = new SqlDataAdapter(command))
                 {
                     da.Fill(ds);
                 }
             }
 
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Template");
-            var files = Directory.GetFiles(Path.Combine(filePath)).ToList();
-            var doc = DocX.Load(files.Find(x => Path.GetFileName(x) == "DeliveryChallan.docx"));
-            var row = ds.Rows[0].ItemArray;
-            var col = ds.Columns;
-            var signPath = Path.Combine(Directory.GetCurrentDirectory(), "Signature");
+            var filePath = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "Template"
+            );
 
+            var files = Directory.GetFiles(Path.Combine(filePath)).ToList();
+
+            var doc = DocX.Load(
+                files.Find(x => Path.GetFileName(x) == "DeliveryChallan.docx")
+            );
+
+            var row = ds.Rows[0].ItemArray;
+
+            var col = ds.Columns;
+
+            var signPath = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "Signature"
+            );
 
             for (int i = 0; i < row.Count(); i++)
             {
+                // Goods Table
                 if (i == 28)
                 {
-                    var items = JsonConvert.DeserializeObject<List<GoodsDetails>>(row[28].ToString());
+                    var items = JsonConvert.DeserializeObject<List<GoodsDetails>>(
+                        row[28].ToString()
+                    );
+
                     doc.InsertParagraph();
+
                     Table t = doc.AddTable(items.Count + 1, 4);
+
                     t.Alignment = Alignment.center;
+
                     t.SetWidths(new float[] { 250f, 300f, 120f, 120f });
-                    t.Rows[0].Cells[0].Paragraphs.First().Append("S.No").Font(new Xceed.Document.NET.Font("Arial")).FontSize(10);
-                    t.Rows[0].Cells[1].Paragraphs.First().Append("Particulars").Font(new Xceed.Document.NET.Font("Arial")).FontSize(10);
 
-                    t.Rows[0].Cells[2].Paragraphs.First().Append("Quantity").Font(new Xceed.Document.NET.Font("Arial")).FontSize(10);
-                    t.Rows[0].Cells[3].Paragraphs.First().Append("Amount").Font(new Xceed.Document.NET.Font("Arial")).FontSize(10);
+                    // Header Row
+                    t.Rows[0].Cells[0].Paragraphs.First()
+                        .Append("S.No")
+                        .Font(new Xceed.Document.NET.Font("Arial"))
+                        .FontSize(8);
 
+                    t.Rows[0].Cells[1].Paragraphs.First()
+                        .Append("Particulars")
+                        .Font(new Xceed.Document.NET.Font("Arial"))
+                        .FontSize(10);
+
+                    t.Rows[0].Cells[2].Paragraphs.First()
+                        .Append("Quantity")
+                        .Font(new Xceed.Document.NET.Font("Arial"))
+                        .FontSize(10);
+
+                    t.Rows[0].Cells[3].Paragraphs.First()
+                        .Append("Amount")
+                        .Font(new Xceed.Document.NET.Font("Arial"))
+                        .FontSize(10);
+
+                    // Item Rows
                     for (int k = 0; k < items.Count; k++)
                     {
-                        t.Rows[k + 1].Cells[0].Paragraphs.First().Append(items[k].SNo.ToString());
-                        t.SetWidths(new float[] { 35, 350,110 });
+                        t.Rows[k + 1].Cells[0].Paragraphs.First()
+                            .Append(items[k].SNo.ToString());
 
-                        //{ 35, 300, 120, 130, 120 });
-                        t.Rows[k + 1].Cells[1].Paragraphs.First().Append(items[k].DescriptionOfGoods == null ? "" : items[k].DescriptionOfGoods.ToString()).Font(new Xceed.Document.NET.Font("Arial")).FontSize(10);
-                        t.Rows[k + 1].Cells[2].Paragraphs.First().Append(items[k].Quantity.ToString()).Font(new Xceed.Document.NET.Font("Arial")).FontSize(10);
-                        t.Rows[k + 1].Cells[3].Paragraphs.First().Append(items[k].Amount.ToString()).Font(new Xceed.Document.NET.Font("Arial")).FontSize(10);
+                        t.SetWidths(new float[] { 35, 350, 110 });
+
+                        t.Rows[k + 1].Cells[1].Paragraphs.First()
+                            .Append(items[k].DescriptionOfGoods ?? "")
+                            .Font(new Xceed.Document.NET.Font("Arial"))
+                            .FontSize(10);
+
+                        t.Rows[k + 1].Cells[2].Paragraphs.First()
+                            .Append(items[k].Quantity.ToString())
+                            .Font(new Xceed.Document.NET.Font("Arial"))
+                            .FontSize(10);
+
+                        decimal itemAmount = Convert.ToDecimal(items[k].Amount);
+
+                        bool isGSTInclude = Convert.ToBoolean(row[35]);
+
+                        decimal cgstPercent = Convert.ToDecimal(row[52]);
+                        decimal sgstPercent = Convert.ToDecimal(row[53]);
+
+                        decimal finalAmount = itemAmount;
+
+                        if (isGSTInclude)
+                        {
+                            decimal gstPercent = cgstPercent + sgstPercent;
+
+                            finalAmount = itemAmount + (itemAmount * gstPercent / 100);
+                        }
+
+                        t.Rows[k + 1].Cells[3].Paragraphs.First()
+                            .Append(finalAmount.ToString("0.00"))
+                            .Font(new Xceed.Document.NET.Font("Arial"))
+                            .FontSize(10);
                     }
 
-                    //doc.InsertTable(t);
                     doc.ReplaceTextWithObject("<Table>", t);
                 }
 
+                // Total Amount with GST
                 if (i == 18)
                 {
-                    decimal value = Convert.ToDecimal(row[18]);                  
+                    decimal grandTotal =
+                        Convert.ToDecimal(row[25]);
 
-                    // Capitalize the first letter of the result
-                    row[20] = ConvertAmountToWords(value);
+                    row[18] = grandTotal.ToString("0.00");
 
+                    row[20] = ConvertAmountToWords(grandTotal);
                 }
+
+                // Date Format
                 if (i == 12)
                 {
                     DateTime dateValue;
 
-                    // Try to parse the value in row[3] as a DateTime
-                    if (DateTime.TryParse(row[12].ToString(), out dateValue))
+                    if (DateTime.TryParse(
+                        row[12].ToString(),
+                        out dateValue))
                     {
-                        // Format the date as "dd-MM-yyyy"
-                        row[12] = dateValue.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+                        row[12] = dateValue.ToString(
+                            "dd/MM/yyyy",
+                            CultureInfo.InvariantCulture
+                        );
                     }
                 }
-                var formatcolumn = "<" + col[i] + ">";
-                doc.ReplaceText(formatcolumn, row[i].ToString());
 
+                var formatcolumn = "<" + col[i] + ">";
+
+                doc.ReplaceText(formatcolumn, row[i].ToString());
             }
+
             doc.AddProtection(EditRestrictions.readOnly);
+
             doc.SaveAs(strfilepath);
-            //var docp = new Aspose.Words.Document("Input.docx");
-            // docp.Save("Output.pdf");
+
             return strfilepath;
         }
         private static string ConvertAmountToWords(decimal num)
