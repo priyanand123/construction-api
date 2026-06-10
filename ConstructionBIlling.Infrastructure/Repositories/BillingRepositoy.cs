@@ -423,7 +423,7 @@ namespace ConstructionBilling.Infrastructure.Repositories
 
                     t.Alignment = Alignment.center;
 
-                    t.SetWidths(new float[] { 250f, 300f, 120f, 120f });
+                    t.SetWidths(new float[] { 150f, 500f, 100f, 100f });
 
                     // Header Row
                     t.Rows[0].Cells[0].Paragraphs.First()
@@ -449,8 +449,12 @@ namespace ConstructionBilling.Infrastructure.Repositories
                     // Item Rows
                     for (int k = 0; k < items.Count; k++)
                     {
+                        t.Rows[k + 1].Cells[0].Paragraphs.First().Alignment = Alignment.center;
+
                         t.Rows[k + 1].Cells[0].Paragraphs.First()
-                            .Append(items[k].SNo.ToString());
+                            .Append(items[k].SNo.ToString())
+                            .Font(new Xceed.Document.NET.Font("Arial"))
+                            .FontSize(10);
 
                         t.SetWidths(new float[] { 35, 350, 110 });
 
